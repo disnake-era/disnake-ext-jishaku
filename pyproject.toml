@@ -1,0 +1,226 @@
+# SPDX-License-Identifier: MIT
+
+[project]
+name = "disnake-ext-jishaku"
+description = "Enhanced disnake port of the famous Jishaku extension."
+authors = [
+    { name = "elenakrittik", email = "dev.elenakrittik@gmail.com" },
+]
+dependencies = [
+    "disnake==2.9.*",
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = { text = "MIT" }
+dynamic = ["version"]
+keywords = [
+    "disnake",
+    "disnake.ext",
+    "disnake",
+    "jishaku",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Repository = "https://github.com/disnake-era/disnake-ext-jishaku"
+Documentation = "https://disnake-ext-jishaku.readthedocs.io/"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = ["pre-commit>=3.6.0"]
+type-check = ["pyright>=1.1.344"]
+lint = ["ruff>=0.1.11"]
+# N.B. Keep in sync with docs/requirements.txt
+docs = [
+    "Sphinx>=7.2.6",
+    "sphinxcontrib-trio>=1.1.2",
+    "sphinx-autobuild>=2021.3.14",
+    "sphinxcontrib-towncrier>=0.4.0a0",
+    "sphinx-rtd-theme>=1.3.0",
+]
+test = [
+    "pytest>=7.4.4",
+    "pytest-asyncio>=0.23.3",
+    "pytest-mock>=3.12.0",
+]
+
+[tool.pdm.version]
+source = "file"
+path = "disnake/ext/jishaku/__init__.py"
+
+[tool.pdm.scripts]
+format = { cmd = "ruff format ./disnake ./docs ./example", help = "Run ruff format" }
+docs = { cmd = "sphinx-autobuild docs docs/_build/html", help = "Run Sphinx documentation server" }
+lint = { cmd = "ruff ./disnake ./docs ./example", help = "Run ruff" }
+pyright = { cmd = "pyright ./disnake ./docs ./example", help = "Run pyright" }
+
+setup_env = { cmd = "pdm install -d -G:all", help = "Set up the local environment and all dependencies" }
+post_setup_env = { cmd = "pre-commit install --install-hooks" }
+
+# Prevent devs from installing this package in editable mode as it doesn't play nice with pyright
+# Usually adding flag only to install would be enough, i'm just being extra careful here
+[tool.pdm.options]
+install = ["--no-editable"]
+add = ["--no-editable"]
+remove = ["--no-editable"]
+sync = ["--no-editable"]
+update = ["--no-editable"]
+
+[tool.pdm.build]
+# nested namespace pkgs are not detected automatically as per PEP 420 & python-packaging docs
+includes = ["disnake/ext/jishaku"]
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportUnnecessaryTypeIgnoreComment = true
+reportMissingTypeStubs = false
+# devs should not interfere with pdm defaults, otherwise it's up to them to fix arising issues
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.9"
+
+[tool.ruff]
+required-version = "0.1.11"
+preview = true
+line-length = 100
+indent-width = 4
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = [
+    "F",       # pyflakes
+    "E", "W",  # pycodestyle
+    "C90",     # mccabe
+    "I",       # isort
+    "N",       # pep8-naming
+    "D2",      # pydocstyle, docstring formatting
+    "D4",      # pydocstyle, docstring structure/content
+    "UP",      # pyupgrade
+    "YTT",     # flake8-2020
+    "ANN",     # flake8-annotations
+    "ASYNC",   # flake8-async
+    "TRIO",    # flake8-trio
+    "S",       # flake8-bandit
+    "BLE",     # flake8-blind-except
+    "FBT",     # flake8-boolean-trap
+    "B",       # flake8-bugbear
+    "A",       # flake8-builtins
+    "COM",     # flake8-commas
+    # "CPY",     # flake8-copyright
+    "C4",      # flake8-comprehensions
+    "DTZ",     # flake8-datetimez
+    "T10",     # flake8-debugger
+    # "DJ",    # flake8-django
+    "EM",      # flake8-errmsg
+    "EXE",     # flake8-executable
+    "FA",      # flake8-future-annotations
+    "ISC",     # flake8-implicit-str-concat
+    "ICN",     # flake8-import-conventions
+    "G",       # flake8-logging-format
+    # "INP",     # flake8-no-pep420
+    "PIE",     # flake8-pie
+    "Q",       # flake8-quotes
+    "T20",     # flake8-print
+    "PYI",     # flake8-pyi
+    # "PT",      # flake8-pytest-style
+    "RSE",     # flake8-raise
+    "RET",     # flake8-return
+    "SLF",     # flake8-self
+    "SLOT",    # flake8-slots
+    "SIM",     # flake8-simplify
+    "TID",     # flake8-tidy-imports
+    "TCH",     # flake8-type-checking
+    "INT",     # flake8-gettext
+    "ARG",     # flake8-unused-arguments
+    "PTH",     # flake8-use-pathlib
+    "TD",      # flake8-todos
+    # "FIX",     # flake8-fixme
+    "ERA",     # eradicate
+    # "PD",      # pandas-vet
+    "PGH",     # pygrep-hooks
+    "PL",      # pylint
+    "TRY",     # tryceratops
+    "FLY",     # flynt
+    # "NPY",     # numpy
+    # "AIR",     # airflow
+    "PERF",    # perflint
+    "FURB",    # refurb
+    "LOG",     # flake8-logging
+    "RUF",     # ruff
+]
+
+ignore = [
+    "D203",    # incompatible with D211
+    "D213",    # incompatible with D212
+    "RET503",  # requires explicit `return None`
+    "F403",    # basically disallows the usage of star imports
+    "EM101",   # forces to not use string literals as exception messages
+    "EM102",   # same as above except for f-string literals
+    "TRY003",  # suggests making a custom exception class, but it's not rust so i gotta ignore this
+    "B028",    # requires explicit `stackelevel=...` in warnings.warn() calls
+    "PGH003",  # requires explicit error in type: ignores
+    "ANN401",  # no Any in **extras
+    "PLR0912", # too much branches
+    "FBT003",  # there's nothing we can do... - napoleon (maybe)
+    "E501",    # incompat w/ ruff format
+    "COM812",  # incompat w/ ruff format
+    "ISC001",  # incompat w/ ruff format
+]
+
+[tool.towncrier]
+directory = "changelogs"
+package = "disnake.ext.jishaku"
+filename = "docs/changelog.rst"
+template = "changelogs/_template.rst.jinja"
+title_format = false
+underlines = "-~"
+issue_format = ":issue:`{issue}`"
+
+    [[tool.towncrier.type]]
+    directory = "breaking"
+    name = "Breaking Changes"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "deprecate"
+    name = "Deprecations"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "feat"
+    name = "New Features"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "fix"
+    name = "Bug Fixes"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "docs"
+    name = "Documentation"
+    showcontent = true
+
+    [[tool.towncrier.type]]
+    directory = "misc"
+    name = "Miscellaneous"
+    showcontent = true

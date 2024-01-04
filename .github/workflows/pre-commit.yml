@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+
+name: Check with pre-commit
+
+on:
+  push:
+
+jobs:
+  check_with_pre-commit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: pdm-project/setup-pdm@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: true
+        cache-dependency-path: 'pyproject.toml'
+
+    - run: pdm install -G:all
+    - run: pdm run pre-commit run --all-files
