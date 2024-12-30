@@ -7,7 +7,7 @@ authors = [
     { name = "elenakrittik", email = "dev.elenakrittik@gmail.com" },
 ]
 dependencies = [
-    "disnake==2.9.*",
+    "disnake==2.10.*",
 ]
 requires-python = ">=3.9"
 readme = "README.md"
